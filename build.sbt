@@ -57,8 +57,6 @@ lazy val pixelxp =
     jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
     moduleName := "pixel-xp",
     fork := false,
-    // we have to exclude the sources because of a compiler bug: https://issues.scala-lang.org/browse/SI-10134
-    sources in (Compile, doc) := Seq.empty,
     libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "1.0.0"
       ) ++
