@@ -1,8 +1,5 @@
-import Dependencies.{scalaGraph, _}
+import Dependencies._
 import sbt.Keys._
-
-import CrossPlugin.autoImport.crossProject
-import CrossPlugin.autoImport.CrossType
 
 def testScope(project: ProjectReference) = project % "test->test;test->compile"
 
@@ -48,19 +45,22 @@ lazy val noPublishSettings = Seq(
 
 lazy val defaultModuleSettings = commonSettings ++ dependencyOverrideSettings ++ Revolver.settings ++ SonatypePublish.settings
 
-lazy val pixelxp = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
+// Add support for the DOM in `run` and `test`
+
+
+lazy val pixelxp =
+  project
   .in(file("."))
   .settings(defaultModuleSettings)
   .settings(
+    scalaJSUseMainModuleInitializer := true,
+    jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
     moduleName := "pixel-xp",
     fork := false,
     // we have to exclude the sources because of a compiler bug: https://issues.scala-lang.org/browse/SI-10134
     sources in (Compile, doc) := Seq.empty,
-    libraryDependencies ++=
-      compileDeps(
-        reflections,
-        scalaReflect(scalaVersion.value),
+    libraryDependencies ++= Seq(
+        "org.scala-js" %%% "scalajs-dom" % "1.0.0"
       ) ++
         testDeps(
           scalaTest,
@@ -68,4 +68,4 @@ lazy val pixelxp = crossProject(JSPlatform, JVMPlatform)
           slf4jApi,
           logback
         )
-  )
+  ).enablePlugins(ScalaJSPlugin)

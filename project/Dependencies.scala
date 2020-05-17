@@ -3,8 +3,20 @@ import sbt._
 //noinspection TypeAnnotation
 object Dependencies {
 
-  val akkaVersion = "2.5.21"
   val jvmV = "1.8"
+
+  // Last stable release
+  val breeze = "org.scalanlp" %% "breeze" % "1.0"
+
+  val breezeNatives = "org.scalanlp" %% "breeze-natives" % "1.0"
+
+  val breezeViz = "org.scalanlp" %% "breeze-viz" % "1.0"
+
+  val scalaFx = "org.scalafx" %% "scalafx" % "14-R19"
+
+  lazy val javaFXModules =
+    Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
+      .map( m => "org.openjfx" % s"javafx-$m" % "14.0.1" classifier "mac")
 
   val typeSafeConfig =            "com.typesafe"               %  "config"                             % "1.3.1"
 
