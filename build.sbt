@@ -5,8 +5,8 @@ def testScope(project: ProjectReference) = project % "test->test;test->compile"
 
 val commonSettings = Defaults.coreDefaultSettings ++ Seq(
   organization := "com.github.merlijn",
-  scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.12.4"),
+  scalaVersion := "2.13.2",
+  crossScalaVersions := Seq("2.13.2"),
   fork := true,
   testOptions += Tests.Argument(TestFrameworks.JUnit, "-v"),
   javacOptions := Seq("-source", jvmV, "-target", jvmV),
@@ -58,11 +58,11 @@ lazy val pixelxp =
     moduleName := "pixel-xp",
     fork := false,
     libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "1.0.0"
+        "org.scala-js" %%% "scalajs-dom" % "1.0.0",
+        "com.lihaoyi" %%% "scalatags" % "0.9.1"
       ) ++
         testDeps(
           scalaTest,
-          scalaCheck,
           slf4jApi,
           logback
         )

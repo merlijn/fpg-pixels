@@ -20,7 +20,7 @@ object Dependencies {
 
   val typeSafeConfig =            "com.typesafe"               %  "config"                             % "1.3.1"
 
-  val scalaTest =                 "org.scalatest"              %% "scalatest"                          % "3.0.5"
+  val scalaTest =                 "org.scalatest"              %% "scalatest"                          % "3.1.1"
 
   val levelDB   =                 "org.iq80.leveldb"           %  "leveldb"                            % "0.7"
   val levelDBJni =                "org.fusesource.leveldbjni"  %  "leveldbjni-all"                     % "1.8"
@@ -44,7 +44,7 @@ object Dependencies {
   val findbugs =                  "com.google.code.findbugs"   %  "jsr305"                             % "1.3.9"
 
   val slf4jApi =                  "org.slf4j"                  %  "slf4j-api"                          % "1.7.25"
-  val scalaCheck =                "org.scalacheck"             %% "scalacheck"                         % "1.13.4"
+  val scalaCheck =                "org.scalacheck"             %% "scalacheck"                         % "1.14.1"
 
   def scopeDeps(scope: String, modules: Seq[ModuleID]) =  modules.map(m => m % scope)
   def compileDeps(modules: ModuleID*) = modules.toSeq
