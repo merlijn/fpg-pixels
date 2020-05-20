@@ -14,7 +14,7 @@ val commonSettings = Defaults.coreDefaultSettings ++ Seq(
     "-unchecked",
     "-deprecation",
     "-feature",
-    "-Ywarn-dead-code",
+//    "-Ywarn-dead-code", // disabled because it flag js.native as dead code: https://github.com/scala/bug/issues/11942
     "-language:higherKinds",
     "-language:existentials",
     "-language:implicitConversions",
@@ -45,21 +45,19 @@ lazy val noPublishSettings = Seq(
 
 lazy val defaultModuleSettings = commonSettings ++ dependencyOverrideSettings ++ Revolver.settings ++ SonatypePublish.settings
 
-// Add support for the DOM in `run` and `test`
-
-
-lazy val pixelxp =
+lazy val pixelFPG =
   project
   .in(file("."))
   .settings(defaultModuleSettings)
   .settings(
     scalaJSUseMainModuleInitializer := true,
     jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
-    moduleName := "pixel-xp",
+    moduleName := "pixel-fpg",
     fork := false,
     libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "1.0.0",
-        "com.lihaoyi" %%% "scalatags" % "0.9.1"
+        "com.lihaoyi"  %%% "scalatags"   % "0.9.1",
+        "com.lihaoyi"  %%% "scalarx"     % "0.4.2"
       ) ++
         testDeps(
           scalaTest,
