@@ -1,10 +1,16 @@
 package com.github.merlijn
 
 import org.scalajs.dom
+import org.scalajs.dom.html.Canvas
 
 object Draw {
 
-  def drawStarSky(w: Int, h: Int, nrOfStars: Int, ctx: dom.CanvasRenderingContext2D): Unit = {
+  def drawNightSky(c: Canvas, nrOfStars: Int): Unit = {
+    val ctx = c.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
+    drawNightSky(c.width, c.height, nrOfStars, ctx)
+  }
+
+  def drawNightSky(w: Int, h: Int, nrOfStars: Int, ctx: dom.CanvasRenderingContext2D): Unit = {
 
     val (minSides,  maxSides)  = (4, 8)
     val (minRadius, maxRadius) = (5, w / 20)

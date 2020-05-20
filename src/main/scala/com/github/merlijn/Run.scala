@@ -1,7 +1,9 @@
 package com.github.merlijn
 
+import com.github.merlijn.pages.Tabs
 import org.scalajs.dom
 import org.scalajs.dom.html
+import org.scalajs.dom.html.Canvas
 import rx._
 import scalatags.JsDom.all._
 
@@ -11,39 +13,43 @@ object Run {
 
     implicit val ctx: Ctx.Owner = Ctx.Owner.safe()
 
-    val defaultPage = "Stary Sky"
-
-    val page: Var[String] = Var(defaultPage)
-
     val pages: Map[String, Frag] = Map(
       "Stary Sky" -> {
+
         // append canvas
-        val canvas = dom.document.createElement("canvas").asInstanceOf[html.Canvas]
+        val c: Canvas = canvas(`class` := "my-4").render
 
-        // set size
-        val w = 900
-        val h = 600
+        c.width = 900
+        c.height = 600
 
-        canvas.width = w
-        canvas.height = h
+        Draw.drawNightSky(c, 80)
 
-        Draw.drawStarSky(w, h, 80, canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D])
-
-        canvas
+        Tabs.tabs(
+          Map(
+            "Image" -> c,
+            "Source" -> h3("source")
+        ))
       },
       "Penrose tile" -> { h3("TODO - Penrose tile") },
       "Bricks" -> { h3("TODO - Bricks")}
     )
 
+    val defaultPage = pages.head._1
+
+    val page: Var[String] = Var(defaultPage)
+
+
     // called when url changes, updates states, triggers re-render
     def navigate(href: String): Unit = href.split('#').tail.headOption match {
-      case Some(destination) => page.update(destination)
-      case _                 => page.update("")
+      case Some(destination) =>
+        page.update(destination.replaceAll("%20", " "))
+      case _                 =>
+        page.update(defaultPage)
     }
 
     // user navigation callback (back, forward buttons)
     dom.window.onpopstate = _ => { navigate(dom.window.location.href) }
-    
+
     dom.document.body.appendChild(Components.topBar.render)
     dom.document.body.appendChild(Components.pageWithSidebar(pages.keySet.toSeq, page.now).render)
 
