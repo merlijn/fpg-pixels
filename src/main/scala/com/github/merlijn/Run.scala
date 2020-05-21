@@ -1,6 +1,7 @@
 package com.github.merlijn
 
-import com.github.merlijn.pages.Tabs
+import com.github.merlijn.pages.Penrose.PenroseP3
+import com.github.merlijn.pages.{Penrose, Tabs}
 import org.scalajs.dom
 import org.scalajs.dom.html
 import org.scalajs.dom.html.Canvas
@@ -30,7 +31,26 @@ object Run {
             "Source" -> h3("source")
         ))
       },
-      "Penrose tile" -> { h3("TODO - Penrose tile") },
+      "Penrose tile" -> {
+
+        // append canvas
+        val c: Canvas = canvas(`class` := "my-4").render
+
+        c.width = 900
+        c.height = 600
+
+        val ctx = c.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
+
+        ctx.fillStyle = "#eeeeee"
+        ctx.fillRect(0, 0, 900, 600)
+
+        ctx.translate(200, 200)
+        ctx.scale(5, 5)
+
+        PenroseP3(Penrose.example1, 100, 7).draw(ctx)
+
+        c
+      },
       "Bricks" -> { h3("TODO - Bricks")}
     )
 
