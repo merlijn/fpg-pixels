@@ -75,9 +75,9 @@ object Penrose {
     Seq(BTileL(a, b, c))
   }
 
-  case class PenroseP3(initialTiles: Seq[Tile], scale: Int = 100, ngen: Int = 4) {
+  case class PenroseP3(initialTiles: Seq[Tile], ngen: Int = 4) {
 
-    def draw(ctx: dom.CanvasRenderingContext2D): Unit = {
+    def draw(x: Int, y: Int, w: Int, h: Int, ctx: dom.CanvasRenderingContext2D): Unit = {
 
       var elements = initialTiles
 
@@ -95,6 +95,16 @@ object Penrose {
           else
             None
       }
+
+      val minX = removedDuplicates.map(_.centre.re).min
+      val minY = removedDuplicates.map(_.centre.im).min
+      val maxX = removedDuplicates.map(_.centre.re).max
+      val maxY = removedDuplicates.map(_.centre.im).max
+
+      val scale = Math.min(w / (maxX - minX), h / (maxY - minY))
+
+      ctx.scale(scale, scale)
+      ctx.translate(x - minX, y - minY)
 
       removedDuplicates.foreach { e =>
 

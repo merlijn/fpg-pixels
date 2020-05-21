@@ -44,10 +44,7 @@ object Run {
         ctx.fillStyle = "#eeeeee"
         ctx.fillRect(0, 0, 900, 600)
 
-        ctx.translate(200, 200)
-        ctx.scale(5, 5)
-
-        PenroseP3(Penrose.example1, 100, 7).draw(ctx)
+        PenroseP3(Penrose.example1, 6).draw(0, 0, 900, 600, ctx)
 
         c
       },
