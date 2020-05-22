@@ -1,7 +1,13 @@
-package com.github.merlijn.pages
+package com.github.merlijn.calc
 
 import scala.math._
 
+/**
+ * Complex number class
+ *
+ * @param re Real part
+ * @param im Imaginary part
+ */
 case class Complex(re: Double, im: Double) extends Ordered[Complex] {
   private val modulus = sqrt(pow(re, 2) + pow(im, 2))
 

@@ -1,34 +1,33 @@
-package com.github.merlijn
+package com.github.merlijn.draw
 
 import org.scalajs.dom
 import org.scalajs.dom.html.Canvas
 
-object Draw {
+import scala.util.Random
 
-  def drawNightSky(c: Canvas, nrOfStars: Int): Unit = {
-    val ctx = c.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
-    drawNightSky(c.width, c.height, nrOfStars, ctx)
-  }
+object NightSky {
 
-  def drawNightSky(w: Int, h: Int, nrOfStars: Int, ctx: dom.CanvasRenderingContext2D): Unit = {
+  def drawNightSky(nrOfStars: Int)(ctx: dom.CanvasRenderingContext2D, w: Int, h: Int): Unit = {
 
     val (minSides,  maxSides)  = (4, 8)
     val (minRadius, maxRadius) = (5, w / 20)
 
+    val rnd = new Random()
+
     ctx.lineWidth = 2
     ctx.fillStyle = "darkblue"
     ctx.fillRect(0, 0, w, h)
-
     ctx.fillStyle = "yellow"
+
 
     // draw the stars
     for (i <- 1 to nrOfStars) {
 
-      val x = (Math.random() * w).toInt
-      val y = (Math.random() * h).toInt
-      val r = (Math.random() * (maxRadius - minRadius)).toInt + minRadius
-      val sides = (Math.random() * (maxSides - minSides)).toInt + minSides
-      val a = (Math.random() * Math.PI * 2)
+      val x = rnd.nextInt(w)
+      val y = rnd.nextInt(h)
+      val r = rnd.nextInt(maxRadius - minRadius) + minRadius
+      val sides = rnd.nextInt(maxSides - minSides) + minSides
+      val a = rnd.nextDouble() * Math.PI * 2
 
       fillStar(x, y, r, sides, a, ctx)
     }

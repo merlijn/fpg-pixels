@@ -1,5 +1,6 @@
-package com.github.merlijn.pages
+package com.github.merlijn.draw
 
+import com.github.merlijn.calc.Complex
 import org.scalajs.dom
 
 object Penrose {
@@ -18,22 +19,9 @@ object Penrose {
     def conjugate(): Tile
     def inflate(): Seq[Tile]
 
-    def path(ctx: dom.CanvasRenderingContext2D): Unit = {
-
-      val ab = b - a
-      val bc = c - b
-
-      ctx.beginPath()
-      ctx.moveTo(a.re, a.im)
-      ctx.lineTo(ab.re, ab.im)
-      ctx.lineTo(bc.re, bc.im)
-      ctx.lineTo((-ab).re, (-ab).im)
-      ctx.closePath()
-    }
-
-    def flipY: Tile
-
-    override def toString = f"a: ${a.re}%1.5f,${a.im}%1.5f | b: ${b.re}%1.5f,${b.im}%1.5f | c: ${c.re}%1.5f,${c.im}%1.5f"
+    override def toString =
+      // returns a string representation of (a, b, c) shortened to 5 decimal precision
+      f"a: ${a.re}%1.5f,${a.im}%1.5f | b: ${b.re}%1.5f,${b.im}%1.5f | c: ${c.re}%1.5f,${c.im}%1.5f"
   }
 
   case class BTileL(a: Complex, b: Complex, c: Complex)  extends Tile {
@@ -75,9 +63,14 @@ object Penrose {
     Seq(BTileL(a, b, c))
   }
 
-  case class PenroseP3(initialTiles: Seq[Tile], ngen: Int = 4) {
+  object PenroseP3 {
 
-    def draw(x: Int, y: Int, w: Int, h: Int, ctx: dom.CanvasRenderingContext2D): Unit = {
+    def draw(initialTiles: Seq[Tile] = example1, ngen: Int = 5)(ctx: dom.CanvasRenderingContext2D, w: Int, h: Int): Unit = {
+
+      val backGroundColor = "#eeeeee"
+      val tileLColor = "#ff9a00"
+      val tileSColor = "#e8393b"
+      val autoFit: Boolean = true
 
       var elements = initialTiles
 
@@ -88,6 +81,7 @@ object Penrose {
       val conjugates = elements.map(_.conjugate())
       val combined = (elements ++ conjugates).sortBy(_.centre)
 
+      // remove duplicates
       val removedDuplicates = combined.zip(combined.tail).flatMap {
         case (a, b) =>
           if (!(a.centre-b.centre) > tolerance)
@@ -96,23 +90,30 @@ object Penrose {
             None
       }
 
+      // find the bounds
       val minX = removedDuplicates.map(_.centre.re).min
       val minY = removedDuplicates.map(_.centre.im).min
       val maxX = removedDuplicates.map(_.centre.re).max
       val maxY = removedDuplicates.map(_.centre.im).max
 
-      val scale = Math.min(w / (maxX - minX), h / (maxY - minY))
 
-      ctx.scale(scale, scale)
-      ctx.translate(x - minX, y - minY)
+      // draw background
+      ctx.fillStyle = backGroundColor
+      ctx.fillRect(0, 0, w, h)
+
+      ctx.save()
+
+      if (autoFit) {
+        // auto scale to fit
+        val scale = Math.min(w / (maxX - minX), h / (maxY - minY))
+
+        ctx.scale(scale, scale)
+        ctx.translate(-minX, - minY)
+      }
 
       removedDuplicates.foreach { e =>
 
-        if (e.isInstanceOf[BTileL])
-          ctx.fillStyle = "#ff9a00"
-        else
-          ctx.fillStyle = "#e8393b"
-
+        // draw the tile path
         ctx.beginPath()
         ctx.moveTo(e.a.re, e.a.im)
         ctx.lineTo(e.b.re, e.b.im)
@@ -122,8 +123,17 @@ object Penrose {
 
         ctx.lineTo(d.re, d.im)
         ctx.closePath()
+
+        // fill the path
+        if (e.isInstanceOf[BTileL])
+          ctx.fillStyle = tileLColor
+        else
+          ctx.fillStyle = tileSColor
+
         ctx.fill()
       }
+
+      ctx.restore()
     }
   }
 }
