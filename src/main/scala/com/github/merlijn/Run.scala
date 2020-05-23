@@ -1,12 +1,18 @@
 package com.github.merlijn
 
+import com.github.merlijn.calc.Complex
 import com.github.merlijn.draw.Penrose.PenroseP3
-import com.github.merlijn.draw.{NightSky, Penrose}
+import com.github.merlijn.draw.{Mandelbrot, NightSky, Penrose}
 import org.scalajs.dom
+import org.scalajs.dom.ImageData
 import org.scalajs.dom.html.{Canvas, Div}
+import org.scalajs.dom.raw.Event
 import rx._
 import scalatags.JsDom
 import scalatags.JsDom.all._
+
+import scala.annotation.tailrec
+import scala.util.Random
 
 object Run {
 
@@ -17,7 +23,6 @@ object Run {
     def drawPage(fn: (dom.CanvasRenderingContext2D, Int, Int) => ()): JsDom.TypedTag[Div] = {
       // append canvas
       val c: Canvas = canvas(`class` := "my-4").render
-
 
       c.width = 900
       c.height = 600
@@ -32,21 +37,34 @@ object Run {
         println("up")
       }
 
-
       val ctx = c.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
 
-      fn(ctx, 900, 600)
+      def renderImage(): Unit = fn(ctx, 900, 600)
+
+      val buttonGroup = div(`class` := "button-group", role := "group")(
+        button(`type` := "button", `class` := "btn btn-light", onclick := { () => renderImage() })
+          (Components.featherIcon("refresh-ccw")),
+        button(`type` := "button", `class` := "btn btn-light")
+          (Components.featherIcon("download"))
+      )
+
+      val container = div(
+        `class` := "my-4"
+      )(buttonGroup, c)
+
+      renderImage()
 
       Components.tabs(
         Map(
-          "Image" -> c,
+          "Image" -> container,
           "Source" -> h3("source")
         ))
     }
 
     val pages: Map[String, Frag] = Map(
       "Stary Sky" ->  drawPage { NightSky.drawNightSky(80) },
-      "Penrose tile" -> drawPage { PenroseP3.draw(Penrose.example1, 6) }
+      "Penrose Tiling" -> drawPage { PenroseP3.draw(Penrose.example1, 6) },
+      "Mandelbrot Set" -> drawPage { Mandelbrot.draw _ }
     )
 
     val defaultPage = pages.head._1

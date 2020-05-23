@@ -57,10 +57,10 @@ lazy val pixelFPG =
     libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "1.0.0",
         "com.lihaoyi"  %%% "scalatags"   % "0.9.1",
-        "com.lihaoyi"  %%% "scalarx"     % "0.4.2"
+        "com.lihaoyi"  %%% "scalarx"     % "0.4.2",
+        "org.scalatest" %%% "scalatest" % "3.1.2" % "test"
       ) ++
         testDeps(
-          scalaTest,
           slf4jApi,
           logback
         )

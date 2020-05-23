@@ -5,6 +5,7 @@ import org.scalajs.dom.html.Div
 import rx._
 import scalatags.JsDom
 import scalatags.JsDom.all._
+import scalatags.generic.Namespace
 
 object Components {
 
@@ -26,6 +27,16 @@ object Components {
   }
 
   val active = Var("Pixel FPG")
+
+  def featherIcon(name: String) = {
+
+    val test = s"https://github.com/feathericons/feather/raw/master/icons/$name.svg"
+    img(`class` := "feather", src := test )
+
+//    tag("svg")(`class` := "feather", attr("viewBox") := "0 0 24 24")(
+//      tag("use")(attr("href", Namespace.svgXlinkNamespaceConfig) := s"feather-sprite.svg#$name")
+//    )
+  }
 
   val topBar =
     tag("nav")(
