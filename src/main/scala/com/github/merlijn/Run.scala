@@ -1,18 +1,12 @@
 package com.github.merlijn
 
-import com.github.merlijn.calc.Complex
 import com.github.merlijn.draw.Penrose.PenroseP3
-import com.github.merlijn.draw.{Mandelbrot, NightSky, Penrose}
+import com.github.merlijn.draw.{CircleTest, Mandelbrot, NightSky, Penrose}
 import org.scalajs.dom
-import org.scalajs.dom.ImageData
 import org.scalajs.dom.html.{Canvas, Div}
-import org.scalajs.dom.raw.Event
 import rx._
 import scalatags.JsDom
 import scalatags.JsDom.all._
-
-import scala.annotation.tailrec
-import scala.util.Random
 
 object Run {
 
@@ -64,7 +58,8 @@ object Run {
     val pages: Map[String, Frag] = Map(
       "Stary Sky" ->  drawPage { NightSky.drawNightSky(80) },
       "Penrose Tiling" -> drawPage { PenroseP3.draw(Penrose.example1, 6) },
-      "Mandelbrot Set" -> drawPage { Mandelbrot.draw _ }
+      "Mandelbrot Set" -> drawPage { Mandelbrot.draw _ },
+      "Experiment" -> drawPage { CircleTest.drawB _ }
     )
 
     val defaultPage = pages.head._1
