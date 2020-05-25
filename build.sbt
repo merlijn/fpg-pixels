@@ -45,14 +45,14 @@ lazy val noPublishSettings = Seq(
 
 lazy val defaultModuleSettings = commonSettings ++ dependencyOverrideSettings ++ Revolver.settings ++ SonatypePublish.settings
 
-lazy val pixelFPG =
+lazy val fpgPixels =
   project
   .in(file("."))
   .settings(defaultModuleSettings)
   .settings(
     scalaJSUseMainModuleInitializer := true,
     jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv(),
-    moduleName := "pixel-fpg",
+    moduleName := "fpg-pixels",
     fork := false,
     libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "1.0.0",

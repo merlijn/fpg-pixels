@@ -2,46 +2,55 @@ package com.github.merlijn.draw
 
 import org.scalajs.dom
 
-object CircleTest {
+object Experiment {
+
+//  Math.E
+
+  // 1.87
+  // 2.21
+  // 2.29558714939
+
+  val FAC = 2.29558714939 // 2.5 // 1.87 // 0.6931471805 //1.92 //1.83 //  // 1.61803398875
+  val MAX_R = 3
 
   def next(x: Double, y: Double): (Double, Double) = {
     // intersection
     val iy = Math.sqrt(1 - Math.pow(x, 2))
     val ix = Math.sqrt(1 - Math.pow(y, 2))
 
-    val dfy = if (y > 0) y - (iy - y) else y - (-iy - y)
-    val dfx = if (x > 0) x - (ix - x) else x - (-ix - x)
+    val dfy = if (y > 0) FAC * y - iy else FAC * y + iy
+    val dfx = if (x > 0) FAC * x - ix else FAC * x + ix
 
     (dfx, dfy)
   }
 
-  def iterA(n: Int, max: Int, x: Double, y: Double): Int = {
+  def recurLength(n: Int, max: Int, x: Double, y: Double): Int = {
 
-    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) > 1)
+    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) > MAX_R)
       n
     else if (n >= max)
       n
     else {
       val (dfx, dfy) = next(x, y)
 
-      iterA(n + 1, max, dfx, dfy)
+      recurLength(n + 1, max, dfx, dfy)
     }
   }
 
-  def iterB(n: Int, max: Int, x: Double, y: Double): List[(Double, Double)] = {
+  def recurPoints(n: Int, max: Int, x: Double, y: Double): List[(Double, Double)] = {
 
-//    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) > 1)
-//      List.empty
-    if (n > max)
+    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) > MAX_R)
+      List.empty
+    else if (n > max)
       List.empty
     else {
       val (dfx, dfy) = next(x, y)
 
-      (x, y) +: iterB(n + 1, max, dfx, dfy)
+      (x, y) +: recurPoints(n + 1, max, dfx, dfy)
     }
   }
 
-  def draw(ctx: dom.CanvasRenderingContext2D, w: Int, h: Int): Unit = {
+  def drawA(ctx: dom.CanvasRenderingContext2D, w: Int, h: Int): Unit = {
 
     val r = Math.min(w, h) / 2
 
@@ -60,7 +69,7 @@ object CircleTest {
 
         def color(b: Int, max: Int): Int = {
 
-          val s = iterA(0, max, cx, cy)
+          val s = recurLength(0, max, cx, cy)
           val f = 1 - (s.toDouble / max)
           (f * b).toInt
         }
@@ -82,35 +91,41 @@ object CircleTest {
 
   def drawB(ctx: dom.CanvasRenderingContext2D, w: Int, h: Int): Unit = {
 
-    val r = Math.min(w, h) / 2
+    val s = Math.min(w, h)
+    val r = s / 2
 
     val imageData = ctx.getImageData(0, 0, w, h)
     val data = imageData.data
     val dataSize = h * (w * 4)
 
-    for (x <- 0 to w) {
-      for (y <- 0 to h) {
+    def incPixel(x: Int, y: Int, f: Double = 1): Unit = {
+      val idx = x.toInt * (w * 4) + y.toInt * 4
+
+      if (x < s && y < s && idx >= 0 && idx < dataSize) {
+
+        data(idx)
+        // set the color data
+        data.update(idx, data(idx) + (5 * f).toInt)
+        data.update(idx + 1, data(idx + 1) + (4 * f).toInt)
+        data.update(idx + 2, data(idx + 2) + (2 * f).toInt)
+        data.update(idx + 3, 255)
+      }
+    }
+
+    for (x <- 0 to Math.min(w, h)) {
+      for (y <- 0 to Math.min(w, h)) {
 
         val cx = (x - r).toDouble / r
         val cy = (y - r).toDouble / r
 
-        val seq = iterB(0, 50, cx, cy)
+        val seq = recurPoints(0, 32, cx, cy)
 
         for (p <- seq) {
 
           val imgX = p._1 * r + r
           val imgY = p._2 * r + r
-          val idx = imgY.toInt * (w * 4) + imgX.toInt * 4
 
-          if (idx >= 0 && idx < dataSize) {
-
-            data(idx)
-            // set the color data
-            data.update(idx, data(idx) + 12)
-            data.update(idx + 1, data(idx + 1) + 10)
-            data.update(idx + 2, data(idx + 2) + 6)
-            data.update(idx + 3, 255)
-          }
+          incPixel(imgX.round.toInt, imgY.round.toInt, FAC * 2) //2 - (imgX - imgX.floor) - (imgY - imgY.floor))
         }
       }
     }

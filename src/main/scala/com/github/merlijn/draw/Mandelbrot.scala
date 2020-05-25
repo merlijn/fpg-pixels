@@ -44,16 +44,10 @@ object Mandelbrot {
     val imageData = ctx.getImageData(0, 0, w, h)
     val data = imageData.data
 
-    val w4: Double = w / 4
-
-    val resolution = 4
-
     for (x <- 0 to w) {
-      for (y <- 0 to h)
-      {
-
+      for (y <- 0 to h) {
         // translates (x,y) to coordinates in the complex plane for the mandelbrot
-        // the interesting range is: re (x) -2 -> 1
+        // the interesting range is [re: -2 to 1, im: -1 to 1]
         val mx: Double = -2 + x * (3 / w.toDouble)
         val my: Double = -1 + y * (2 / h.toDouble)
 

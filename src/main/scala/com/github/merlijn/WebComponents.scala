@@ -5,9 +5,8 @@ import org.scalajs.dom.html.Div
 import rx._
 import scalatags.JsDom
 import scalatags.JsDom.all._
-import scalatags.generic.Namespace
 
-object Components {
+object WebComponents {
 
   // converts an Rx to a scalatags Frag, using an implicit renderFn
   implicit def rxFrag[T](r: Rx[T])(implicit renderFn: T => Frag, owner: rx.Ctx.Owner): Frag = {
@@ -26,7 +25,7 @@ object Components {
     first
   }
 
-  val active = Var("Pixel FPG")
+  val active = Var("FPG Pixels")
 
   def featherIcon(name: String) = {
 
@@ -56,7 +55,7 @@ object Components {
         ul(
           `class` := "navbar-nav px-3",
           li(`class` := "nav-item text-nowrap",
-            a(`class` := "nav-link", href := "#", "About", onclick := { () => active.update("Changed!") })
+            a(`class` := "nav-link", href := "#", "About")
            )
         )
     )
