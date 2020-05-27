@@ -15,7 +15,7 @@ object Run {
     implicit val ctx: Ctx.Owner = Ctx.Owner.safe()
 
     val pages: Seq[(String, Frag)] = Seq(
-      "Night Sky" ->  drawPage { NightSky.drawNightSky(80) },
+//      "Night Sky" ->  drawPage { NightSky.drawNightSky(80) },
       "Penrose Tiling" -> drawPage { PenroseP3.draw(Penrose.example1, 6) },
       "Mandelbrot Set" -> drawPage { Mandelbrot.draw _ },
 //      "Experiment A" -> drawPage { Experiment.drawA _ },

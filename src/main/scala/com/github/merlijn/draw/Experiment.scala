@@ -10,10 +10,11 @@ object Experiment {
   // 2.21
   // 2.29558714939
 
-  val FAC = 2.29558714939 // 2.5 // 1.87 // 0.6931471805 //1.92 //1.83 //  // 1.61803398875
-  val MAX_R = 3
+  val FAC = 2 // 2.5 // 1.87 // 0.6931471805 //1.92 //1.83 //  // 1.61803398875
+  val MAX_R = Math.sqrt(2.0) //3
 
   def next(x: Double, y: Double): (Double, Double) = {
+
     // intersection
     val iy = Math.sqrt(1 - Math.pow(x, 2))
     val ix = Math.sqrt(1 - Math.pow(y, 2))
@@ -26,7 +27,9 @@ object Experiment {
 
   def recurLength(n: Int, max: Int, x: Double, y: Double): Int = {
 
-    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) > MAX_R)
+    if (x >= 1 || y >= 1)
+      n
+    else if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) >= MAX_R)
       n
     else if (n >= max)
       n
@@ -39,7 +42,9 @@ object Experiment {
 
   def recurPoints(n: Int, max: Int, x: Double, y: Double): List[(Double, Double)] = {
 
-    if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) > MAX_R)
+    if (x >= 1 || y >= 1)
+      List.empty
+    else if (Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) >= MAX_R)
       List.empty
     else if (n > max)
       List.empty
@@ -98,6 +103,8 @@ object Experiment {
     val data = imageData.data
     val dataSize = h * (w * 4)
 
+    def toImage(c: Double): Int = (c * r + r).round.toInt
+
     def incPixel(x: Int, y: Int, f: Double = 1): Unit = {
       val idx = x.toInt * (w * 4) + y.toInt * 4
 
@@ -125,11 +132,39 @@ object Experiment {
           val imgX = p._1 * r + r
           val imgY = p._2 * r + r
 
-          incPixel(imgX.round.toInt, imgY.round.toInt, FAC * 2) //2 - (imgX - imgX.floor) - (imgY - imgY.floor))
+          incPixel(imgX.round.toInt, imgY.round.toInt, FAC * 1.5) //2 - (imgX - imgX.floor) - (imgY - imgY.floor))
         }
       }
     }
 
+
     ctx.putImageData(imageData, 0, 0)
+
+
+    def plot(x: Double, y: Double) = {
+      val points = recurPoints(0, 32, x, y)
+
+      println(points.size)
+
+      ctx.beginPath()
+
+      val (sx, sy) = points.head
+      ctx.moveTo(toImage(sx), toImage(sy))
+
+      points.foreach{ case (x, y) => ctx.lineTo(toImage(x), toImage(y)) }
+      ctx.closePath()
+      ctx.stroke()
+    }
+
+//    ctx.strokeStyle = "black"
+//    plot(0.25, 0.45)
+//    ctx.strokeStyle = "red"
+//    plot(0.23, 0.47)
+
+//    ctx.strokeStyle = "black"
+//    ctx.beginPath()
+//    ctx.arc(r, r, r, 0, 2 * Math.PI)
+//    ctx.closePath()
+//    ctx.stroke()
   }
 }
